@@ -7,11 +7,13 @@ Note: next() and hasNext() should run in average O(1) time and uses O(h) memory,
 */
 #include <iostream>
 #include <vector>
+#include <stack>
 
 using std::cin;
 using std::cout;
 using std::endl;
 using std::vector;
+using std::stack;
 
 /**
  * Definition for binary tree
@@ -26,77 +28,42 @@ struct TreeNode {
 class BSTIterator {
 public:
     BSTIterator(TreeNode *root) {
-        smallest = nullptr;
-        tree_root = root;
-        root_to_smallest.erase(root_to_smallest.begin(), root_to_smallest.end());
+        TreeNode *smallest = nullptr;
         if(!root) {
             return;
         }
         //Find the smallest
         smallest = root;
-        tree_root = root;
-        while(smallest->left) {
-            root_to_smallest.push_back(smallest);
+        while(smallest) {
+            root_to_smallest.push(smallest);
             smallest = smallest->left;
         }
     }
 
     /** @return whether we have a next smallest number */
     bool hasNext() {
-        return smallest != nullptr;
+        return !root_to_smallest.empty();
     }
 
     /** @return the next smallest number */
     int next() {
         //assert hasNext == true
-        int ret = smallest->val;
-        getNextSmallest();
+        TreeNode *node = root_to_smallest.top();
+        int ret = node->val;
+        root_to_smallest.pop();
+        if(node->right) {
+            node = node->right;
+            root_to_smallest.push(node);
+            node = node->left;
+            while(node) {
+                root_to_smallest.push(node);
+                node = node->left;
+            }
+        }
         return ret;
     }
 private:
-    void getNextSmallest() {
-        TreeNode *tmp;
-        if(smallest->right) {
-            cout<<"right"<<endl;
-            root_to_smallest.push_back(smallest);
-            tmp = smallest->right;
-            while(tmp->left) {
-                root_to_smallest.push_back(tmp);
-                tmp = tmp->left;
-            }
-            smallest = tmp;
-        }else {
-            if(smallest == tree_root) {
-                smallest = nullptr;
-                return;
-            }
-            vector<TreeNode *>::iterator it = root_to_smallest.end() - 1;
-            cout<<"left"<<endl;
-            if((*it)->left == smallest) {
-                tmp = *it;
-                root_to_smallest.erase(it);
-                smallest = tmp;
-            }else {
-                tmp = *it;
-                while(tmp != tree_root) {
-                    root_to_smallest.erase(it);
-                    it = root_to_smallest.end() - 1;
-                    if(tmp == (*it)->left) {
-                        tmp = *it;
-                        root_to_smallest.erase(it);
-                        smallest = tmp;
-                        return;
-                    }
-                    tmp = *it;
-                }
-                root_to_smallest.erase(it);
-                smallest = nullptr;
-            }
-        }
-    }
-    TreeNode *tree_root;
-    TreeNode *smallest;
-    vector<TreeNode *> root_to_smallest;    //Do not include the smallest node
+    stack<TreeNode *> root_to_smallest;    //Include the smallest node
 };
 
 /**
@@ -166,7 +133,7 @@ void BSTree::do_print(TreeNode* begin) {
 
 int main() {
     BSTree tree;
-    vector<int> input = {1,2,3,4,5,6};
+    vector<int> input = {6,5,4,3,2,1};
     for(auto x : input) {
         tree.insert(x);
     }

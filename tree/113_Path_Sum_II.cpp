@@ -49,7 +49,7 @@ public:
 private:
     void travel(TreeNode *root, int sum, vector<int> &path, vector<vector<int>> &path_list) {
         if((!root->left)&&(!root->right)) {
-            if(std::accumulate(path.begin(), path.end(), 0) == sum - root->val) {
+            if(sum == root->val) {
                 path.push_back(root->val);
                 path_list.push_back(path);
                 path.pop_back();    //vector has pop back!
@@ -58,10 +58,10 @@ private:
         }
         path.push_back(root->val);
         if(root->left) {
-            travel(root->left, sum, path, path_list);
+            travel(root->left, sum - root->val, path, path_list);
         }
         if(root->right) {
-            travel(root->right, sum, path, path_list);
+            travel(root->right, sum - root->val, path, path_list);
         }
         path.pop_back();
     }
@@ -136,7 +136,7 @@ int main() {
     tree.print();
     cout<<endl;
     Solution slt;
-    vector<vector<int>> ret = slt.pathSum(tree.root, 13);
+    vector<vector<int>> ret = slt.pathSum(tree.root, 10);
     for(auto row : ret) {
         for(auto x : row) {
             cout<<x<<" ";

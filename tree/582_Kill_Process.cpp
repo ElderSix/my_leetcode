@@ -62,42 +62,17 @@ public:
         }
         return result;
     }
-    vector<int> killProcess_(vector<int>& pid, vector<int>& ppid, int kill) {
-        vector<int> result;
-        deque<int> processes;
-        int temp;
-        processes.push_back(kill);
-        while(!processes.empty()) {
-            temp = processes.front();
-            processes.pop_front();
-            result.push_back(temp);
-            for(int i = 0 ; i < ppid.size(); i++) {
-                if(ppid[i] == temp) {
-                    processes.push_back(pid[i]);
-                }
-            }
-        }
-        return result;
-    }
 };
 
 int main() {
     vector<int> pid = {1, 3, 10, 5};
     vector<int> ppid = {3, 0, 5, 3};
+
     Solution slt;
     vector<int> ret = slt.killProcess(pid, ppid, 3);
     for(auto x : ret) {
         cout<<x<<",";
     }
     cout<<endl;
-    cout<<"[1";
-    for(int i = 2; i < 100; i++){
-        cout<<","<<i;
-    }
-    cout<<"]"<<endl;
-    cout<<"[0";
-    for(int i = 1; i < 99; i++)
-        cout<<","<<i;
-    cout<<"]"<<endl;
     return 0;
 }

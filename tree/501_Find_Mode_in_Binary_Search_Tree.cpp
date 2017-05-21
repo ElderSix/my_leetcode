@@ -46,6 +46,7 @@ public:
             return result;
         }
         //Two pass
+        //Optimize: Morris travesal is a better way
         curr_cnt = 0;
         max_cnt = 0;
         curr_val = 0;

@@ -41,6 +41,8 @@ public:
         int c = 0;
         addTwoNumberRecur(l1tmp, l2tmp, sum_head, c);
         ListNode* result;
+        deletePadding(l1tmp, l1);
+        deletePadding(l2tmp, l2);
         if(c > 0) {
             sum_head->val += c;
             result = sum_head;
@@ -48,8 +50,6 @@ public:
             result = sum_head->next;
             delete sum_head;
         }
-        deletePadding(l1tmp, l1);
-        deletePadding(l2tmp, l2);
         return result;
     }
 private:
